@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,17 +20,14 @@ namespace CakeArtToSQL
 
         private static string connectionString = @"Data Source=DESKTOP-5M58GH9\SQLEXPRESS;Initial Catalog=CakeArt;Integrated Security=True";
         private static SqlConnection connection = new SqlConnection(connectionString);
-        
+
         SqlDataReader reader;
-
-        
-
 
         private void ExcNQ(string Command)
         {
             SqlConnection con = new SqlConnection(connectionString);
             SqlCommand comm = new SqlCommand(Command, con);
-           
+
             con.Open();
             int res = comm.ExecuteNonQuery(); // Insert, Update, Delete
             con.Close();
@@ -38,88 +35,14 @@ namespace CakeArtToSQL
             MessageBox.Show((res == 1 ? "" : "Not ") + "Done!");
         }
 
-        private void BtnAdd_Click(object sender, EventArgs e)
-        {
-            if (rbCake.Checked)
-            {
-
-                ExcNQ($"INSERT INTO Cakes (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
-            }
-            else if (rbCookie.Checked)
-            {
-                ExcNQ($"INSERT INTO Cookies (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
-            }
-            else if (rbSpecial.Checked)
-            {
-                ExcNQ($"INSERT INTO Special (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
-            }
-            ShowTable();
-
-        }
-
-        
-
-        private void DeleteProduct_Click(object sender, EventArgs e)
-        {
-            if (rbCake.Checked)
-            {
-                ExcNQ($"DELETE FROM Cakes WHERE ID ='{txtID.Text}'");
-            }
-            else if (rbCookie.Checked)
-            {
-                ExcNQ($"DELETE FROM Cookies WHERE ID ='{txtID.Text}'");
-            }
-            else if (rbSpecial.Checked)
-            {
-                ExcNQ($"DELETE FROM Special WHERE ID ='{txtID.Text}'");
-            }
-            ShowTable();
-        }
-
-
-        private void BtnRefresh_Click(object sender, EventArgs e)
-        {
-            ShowTable();
-        }
-
-        private void UpdateProduct_Click(object sender, EventArgs e)
-        {
-            
-            if (rbCake.Checked)
-            {
-                string str = "Update Cakes SET ";
-                if (txtName.Text != null)
-                {
-                    str += $"Name = '{txtName.Text}' ,"; 
-                }
-                if (txtPrice.Text != null)
-                {
-                    str += $"Price = '{txtPrice.Text}' ";
-                }
-                str += $" WHERE ID = '{txtID.Text}'";
-                ExcNQ(str);
-            }
-            else if (rbCookie.Checked)
-            {
-                ExcNQ($"Update Cookies SET Name = '{txtName.Text}' , Price = '{txtPrice.Text}' WHERE ID = '{txtID.Text}'");
-            }
-            else if (rbSpecial.Checked)
-            {
-                ExcNQ($"Update Special SET Name = '{txtName.Text}' , Price = '{txtPrice.Text}' WHERE ID = '{txtID.Text}'");
-            }
-            ShowTable();
-        }
-
-
         private void ShowTable()
         {
-            string res="";
+            string res = "";
             connection.Open();
 
             if (rbCake.Checked)
             {
                 res = $"SELECT * FROM Cakes";
-                
             }
             else if (rbCookie.Checked)
             {
@@ -139,10 +62,115 @@ namespace CakeArtToSQL
             }
             connection.Close();
             lblResult.Text = output;
-           
-             
+
         }
 
-        
+
+        private void BtnAdd_Click(object sender, EventArgs e)
+        {
+            if (rbCake.Checked)
+            {
+                ExcNQ($"INSERT INTO Cakes (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
+            }
+            else if (rbCookie.Checked)
+            {
+                ExcNQ($"INSERT INTO Cookies (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
+            }
+            else if (rbSpecial.Checked)
+            {
+                ExcNQ($"INSERT INTO Special (Name, Price) VALUES('{txtName.Text}', '{txtPrice.Text}')");
+            }
+            ShowTable();
+
+        }
+
+
+        private void DeleteProduct_Click(object sender, EventArgs e)
+        {
+            if (rbCake.Checked)
+            {
+                ExcNQ($"DELETE FROM Cakes WHERE ID ='{txtID.Text}'");
+            }
+            else if (rbCookie.Checked)
+            {
+                ExcNQ($"DELETE FROM Cookies WHERE ID ='{txtID.Text}'");
+            }
+            else if (rbSpecial.Checked)
+            {
+                ExcNQ($"DELETE FROM Special WHERE ID ='{txtID.Text}'");
+            }
+            ShowTable();
+        }
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            ShowTable();
+        }
+
+        private void UpdateProduct_Click(object sender, EventArgs e)
+        {
+
+            if (rbCake.Checked)
+            {
+                string str = "Update Cakes SET "; //UPDATE CAKES SET PRICE + {} WHERE ID = '{txtID.Text}'";
+                if (!(String.IsNullOrEmpty(txtName.Text)))
+                {
+                    str += $"Name = '{txtName.Text}' ,";
+                }
+                if (!(String.IsNullOrEmpty(txtPrice.Text)))
+                {
+                    str += $"Price = '{txtPrice.Text}' ";
+                }
+                if (String.IsNullOrEmpty(txtPrice.Text))//במצב שהכנסנו רק שם
+                {
+                    str = str.Remove(str.Length - 1, 1);
+                }
+                str += $" WHERE ID = '{txtID.Text}'";
+                ExcNQ(str);
+            }
+            else if (rbCookie.Checked)
+            {
+                string str = "Update Cookies SET ";
+                if (!(String.IsNullOrEmpty(txtName.Text)))
+                {
+                    str += $"Name = '{txtName.Text}' ,";
+                }
+                if (!(String.IsNullOrEmpty(txtPrice.Text)))
+                {
+                    str += $"Price = '{txtPrice.Text}' ";
+                }
+                if (String.IsNullOrEmpty(txtPrice.Text))
+                {
+                    str = str.Remove(str.Length - 1, 1);
+                }
+                str += $" WHERE ID = '{txtID.Text}'";
+                ExcNQ(str);
+
+            }
+            else if (rbSpecial.Checked)
+            {
+                string str = "Update Special SET ";
+                if (!(String.IsNullOrEmpty(txtName.Text)))
+                {
+                    str += $"Name = '{txtName.Text}' ,";
+                }
+                if (!(String.IsNullOrEmpty(txtPrice.Text)))
+                {
+                    str += $"Price = '{txtPrice.Text}' ";
+                }
+                if (String.IsNullOrEmpty(txtPrice.Text))
+                {
+                    str = str.Remove(str.Length - 1, 1);
+                }
+                str += $" WHERE ID = '{txtID.Text}'";
+                ExcNQ(str);
+            }
+            ShowTable();
+        }
+
+
+    
+
+
     }
 }
